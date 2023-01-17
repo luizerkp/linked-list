@@ -1,9 +1,7 @@
-const Node = (data = null) => {
-  return {
-    value: data,
-    nextNode: null,
-  }
-}
+const Node = (data = null) => ({
+  value: data,
+  nextNode: null,
+});
 
 const LinkedList = () => {
   let head = null;
@@ -11,14 +9,16 @@ const LinkedList = () => {
 
   const handleError = (index, operation) => {
     const emptyListErrorMsg = `Can not perform ${operation} index: ${index} on an empty list`;
-    const beyondRangeErrorMsg = `Can not perform ${operation} index: ${index} last item on list located at index: ${size - 1}`;
+    const beyondRangeErrorMsg = `Can not perform ${operation} index: ${index} last item on list located at index: ${
+      size - 1
+    }`;
     const negativeIndexErrorMsg = `Can not perform ${operation} index: ${index} index can only be a positive interger`;
-    const notAnIntergerErrorMsg = `Can not perform ${operation} with a non-interger index found index: ${index} of type ${typeof index}`
+    const notAnIntergerErrorMsg = `Can not perform ${operation} with a non-interger index found index: ${index} of type ${typeof index}`;
 
     if (head === null && index !== 0) {
       return emptyListErrorMsg;
     }
-    if ( index > size || index < 0) {
+    if (index > size || index < 0) {
       return index > size ? beyondRangeErrorMsg : negativeIndexErrorMsg;
     }
 
@@ -27,62 +27,59 @@ const LinkedList = () => {
     }
 
     if (index === size && (operation === "removeAt" || operation === "updateValueAt")) {
-      return head ===  null ? emptyListErrorMsg : beyondRangeErrorMsg;
+      return head === null ? emptyListErrorMsg : beyondRangeErrorMsg;
     }
 
     return null;
-
-  }
+  };
 
   const append = (value) => {
     const newNode = Node(value);
     size += 1;
     if (head === null) {
-       head = newNode
-       return head;
+      head = newNode;
+      return head;
     }
 
     let ptr = head;
 
-    while(ptr.nextNode !== null) {
+    while (ptr.nextNode !== null) {
       ptr = ptr.nextNode;
     }
-    return ptr.nextNode = newNode;
-  }
+    ptr.nextNode = newNode;
+    return head;
+  };
 
   const prepend = (value) => {
     const newNode = Node(value);
     size += 1;
     if (head === null) {
-       head = newNode
-       return head;
+      head = newNode;
+      return head;
     }
     newNode.nextNode = head;
-    return head = newNode;
-  }
+    head = newNode;
+    return head;
+  };
 
-  const getSize = () => {
-    return size;
-  }
+  const getSize = () => size;
 
-  const getHead = () => {
-    return head !== null ? head.value : head;
-  }
+  const getHead = () => (head !== null ? head.value : head);
 
   const getTail = () => {
     if (head === null || head.nextNode === null) {
-      return head === null ? head : head.value
+      return head === null ? head : head.value;
     }
     let ptr = head;
-    
+
     while (ptr.nextNode !== null) {
       ptr = ptr.nextNode;
     }
     return ptr.value;
-  }
+  };
 
   const at = (index) => {
-    if ( index > size - 1 || index < 0) {
+    if (index > size - 1 || index < 0) {
       return null;
     }
 
@@ -92,23 +89,25 @@ const LinkedList = () => {
       ptr = ptr.nextNode;
     }
     return ptr;
-  }
+  };
 
   const pop = () => {
     if (head === null || head.nextNode === null) {
-      return head = null;
+      head = null;
+      return head;
     }
 
     // last node is at size - 1 setting it's nextNode to null removes the pointer to the last node from the list
-    at(size -2).nextNode = null;
-    return size -= 1;
-  }
+    at(size - 2).nextNode = null;
+    size -= 1;
+    return size;
+  };
 
   const contains = (val) => {
     if (head === null || head.nextNode === null) {
-      return head === null ? false : head.value === val
+      return head === null ? false : head.value === val;
     }
-    
+
     let ptr = head;
 
     while (ptr.nextNode !== null) {
@@ -116,7 +115,7 @@ const LinkedList = () => {
     }
 
     return ptr.value === val;
-  }
+  };
 
   const find = (val) => {
     if (head === null) {
@@ -126,16 +125,16 @@ const LinkedList = () => {
     let ptr = head;
     let idx = 0;
 
-    while(ptr.nextNode !== null && ptr.value !== val) {
+    while (ptr.nextNode !== null && ptr.value !== val) {
       ptr = ptr.nextNode;
-      idx += 1
+      idx += 1;
     }
 
-    return ptr.value === val ? idx : null
-  }
+    return ptr.value === val ? idx : null;
+  };
 
   const toString = () => {
-    let linkeListString = '';
+    let linkeListString = "";
 
     if (head === null) {
       return ["Linked list is empty"];
@@ -143,7 +142,7 @@ const LinkedList = () => {
 
     let ptr = head;
 
-    while(ptr.nextNode !== null) {
+    while (ptr.nextNode !== null) {
       const stringNode = `( ${ptr.value} ) -> `;
       linkeListString = linkeListString.concat(stringNode);
       ptr = ptr.nextNode;
@@ -153,8 +152,7 @@ const LinkedList = () => {
     linkeListString = linkeListString.concat(lastNode);
 
     return linkeListString;
-  }
-
+  };
 
   const insertAt = (newValue, index) => {
     const error = handleError(index, "insertAt");
@@ -165,19 +163,20 @@ const LinkedList = () => {
     // if inserting at the beginning or attaching at the end, prepend or append newValue respectively
     if (index === 0 || index === size) {
       return index === 0 ? prepend(newValue) : append(newValue);
-    } 
+    }
     const newNode = Node(newValue);
     let ptr = head;
     let previousNode = null;
     for (let currentIndex = 0; currentIndex <= index - 1; currentIndex += 1) {
-        previousNode = ptr;
-        ptr = ptr.nextNode
+      previousNode = ptr;
+      ptr = ptr.nextNode;
     }
 
     previousNode.nextNode = newNode;
     size += 1;
-    return newNode.nextNode = ptr;
-  }
+    newNode.nextNode = ptr;
+    return head;
+  };
 
   const removeAt = (index) => {
     const error = handleError(index, "removeAt");
@@ -190,20 +189,22 @@ const LinkedList = () => {
     }
 
     if (index === 0) {
-      let ptr = head.nextNode;
-      return head = ptr
+      const ptr = head.nextNode;
+      head = ptr;
+      return head;
     }
 
     let ptr = head;
     let previousNode = null;
     for (let currentIndex = 0; currentIndex <= index - 1; currentIndex += 1) {
-        previousNode = ptr;
-        ptr = ptr.nextNode
+      previousNode = ptr;
+      ptr = ptr.nextNode;
     }
 
     size -= 1;
-    return previousNode.nextNode = ptr.nextNode;
-  }
+    previousNode.nextNode = ptr.nextNode;
+    return head;
+  };
 
   const updateValueAt = (newValue, index) => {
     const error = handleError(index, "updateValueAt");
@@ -213,16 +214,18 @@ const LinkedList = () => {
     }
 
     if (index === 0) {
-      return head.value = newValue
+      head.value = newValue;
+      return head;
     }
     let ptr = head;
     for (let currentIndex = 0; currentIndex <= index - 1; currentIndex += 1) {
-        ptr = ptr.nextNode
+      ptr = ptr.nextNode;
     }
 
-    return ptr.value = newValue;
-  }
-  
+    ptr.value = newValue;
+    return head;
+  };
+
   return {
     append,
     prepend,
@@ -237,8 +240,8 @@ const LinkedList = () => {
     insertAt,
     removeAt,
     updateValueAt,
-  }
-}
+  };
+};
 
 const newList = LinkedList();
 const node1 = "node1";
